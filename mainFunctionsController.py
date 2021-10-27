@@ -18,12 +18,10 @@ class mainFunctionsController(QDialog):
 
         
     def btnConfirmAction(self):
-        print("confirm")
-        CamaraTest.iniciarCaptura(True)
         print("sexual prodigy")
-       
-       
+        CamaraTest.iniciarCaptura(True)
         
+           
     def btnCancelAction(self):
         print("cancel")
 
