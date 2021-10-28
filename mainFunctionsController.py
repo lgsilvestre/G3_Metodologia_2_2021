@@ -12,11 +12,14 @@ from PyQt5.uic import loadUi
 from PyQt5.QtCore import pyqtSlot, QTimer
 from PyQt5.QtWidgets import QDialog
 
+cancel = False
+
 class mainFunctionsController(QDialog):
     def __init__(self):
         super(mainFunctionsController, self).__init__()
         self.ui = mainFunctions()
         self.ui.setupUi(self)
+        self.ui.video.setPixmap(QPixmap("default.jpg"))
         self.image = None
         self.BtnActions()
         self.show()
@@ -26,10 +29,17 @@ class mainFunctionsController(QDialog):
         self.ui.btnCancel.clicked.connect(self.btnCancelAction)        
         
     def btnConfirmAction(self):
+        self.cancel = False
         self.startVideo("0")
         
     def btnCancelAction(self):
         print("cancel")        
+        self.cancel = True
+        self.ui.video.setPixmap(QPixmap("default.jpg"))
+        
+        
+        
+        
         
     def startVideo(self, camera_name):
         selfAux = self
@@ -38,7 +48,7 @@ class mainFunctionsController(QDialog):
         """
         Busca las camaras disponibles
         """
-        print("iniciando camara")
+        print("Buscando camara")
         if len(camera_name) == 1:
             self.capture = cv2.VideoCapture(int(camera_name))
             print("camara default")
@@ -51,7 +61,7 @@ class mainFunctionsController(QDialog):
             os.mkdir(path)
             print("Folder created")
         # Reconoce el rostro de las imagenes guardadas en img
-        print("iniciando reconocimiento")
+        print("Ansalizando imagenes guardadas")
         images = []
         self.class_names = []
         self.encode_list = []
@@ -68,7 +78,7 @@ class mainFunctionsController(QDialog):
             # encode = face_recognition.face_encodings(img)[0]
             self.encode_list.append(encodes_cur_frame)
         timer.timeout.connect(selfAux.update_frame)  # Conecta una funcion al timer con 40 ms
-        timer.start(40)  
+        timer.start(20)  
             
         print("fin reconocimiento de imagenes guardadas")
 
@@ -133,7 +143,8 @@ class mainFunctionsController(QDialog):
         outImage = QImage(image, image.shape[1], image.shape[0], image.strides[0], qformat)
         outImage = outImage.rgbSwapped()
 
-        if window == 1:
+        if window == 1 and self.cancel == False:
+            #print("Mostrando imagen")
             selfUi.video.setPixmap(QPixmap.fromImage(outImage))
             selfUi.video.setScaledContents(True)
 
