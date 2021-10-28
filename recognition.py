@@ -1,62 +1,40 @@
-import sys
+from PyQt5.QtGui import QImage, QPixmap
+from PyQt5.uic import loadUi
+from PyQt5.QtCore import pyqtSlot, QTimer
+from PyQt5.QtWidgets import QDialog
 import cv2
 import face_recognition
 import numpy as np
 import datetime
 import os
-import CamaraTest, recognition
-from view.mainFunctions import mainFunctions
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtGui import QImage, QPixmap
-from PyQt5.uic import loadUi
-from PyQt5.QtCore import pyqtSlot, QTimer
-from PyQt5.QtWidgets import QDialog
 
-class mainFunctionsController(QDialog):
+
+class Ui_OutputDialog(QDialog):
     def __init__(self):
-        super(mainFunctionsController, self).__init__()
-        self.ui = mainFunctions()
-        self.ui.setupUi(self)
+        super(Ui_OutputDialog, self).__init__()
+        loadUi("./outputwindow.ui", self)
         self.image = None
-        self.BtnActions()
-        self.show()
-    
-    def BtnActions(self):   
-        self.ui.btnConfirm.clicked.connect(self.btnConfirmAction)
-        self.ui.btnCancel.clicked.connect(self.btnCancelAction)        
-        
-    def btnConfirmAction(self):
-        self.startVideo("0")
-        
-    def btnCancelAction(self):
-        print("cancel")        
-        
+
+    @pyqtSlot()
     def startVideo(self, camera_name):
-        selfAux = self
-        self = self.ui
-        
         """
-        Busca las camaras disponibles
+        :param camera_name: link of camera or usb camera
+        :return:
         """
-        print("iniciando camara")
         if len(camera_name) == 1:
-            self.capture = cv2.VideoCapture(int(camera_name))
-            print("camara default")
+        	self.capture = cv2.VideoCapture(int(camera_name))
         else:
-            self.capture = cv2.VideoCapture(camera_name)
-            print("camara usb")
-        timer = QTimer(selfAux)  # Create Timer
-        path = 'img'
+        	self.capture = cv2.VideoCapture(camera_name)
+        self.timer = QTimer(self)  # Create Timer
+        path = 'ImagesAttendance'
         if not os.path.exists(path):
             os.mkdir(path)
-            print("Folder created")
-        # Reconoce el rostro de las imagenes guardadas en img
-        print("iniciando reconocimiento")
+        # known face encoding and known face name list
         images = []
         self.class_names = []
         self.encode_list = []
         attendance_list = os.listdir(path)
-        print(attendance_list)
+        # print(attendance_list)
         for cl in attendance_list:
             cur_img = cv2.imread(f'{path}/{cl}')
             images.append(cur_img)
@@ -67,21 +45,21 @@ class mainFunctionsController(QDialog):
             encodes_cur_frame = face_recognition.face_encodings(img, boxes)[0]
             # encode = face_recognition.face_encodings(img)[0]
             self.encode_list.append(encodes_cur_frame)
-        timer.timeout.connect(selfAux.update_frame)  # Conecta una funcion al timer con 40 ms
-        timer.start(40)  
-            
-        print("fin reconocimiento de imagenes guardadas")
+        self.timer.timeout.connect(self.update_frame)  # Connect timeout to the output function
+        self.timer.start(40)  # emit the timeout() signal at x=40ms
 
     def face_rec_(self, frame, encode_list_known, class_names):
         """
         :param frame: frame from camera
         :param encode_list_known: known face encoding
         :param class_names: known face names
+        :return:
         """
         # csv
         def mark_attendance(name):
             """
-            Registra la asistencia en un archivo csv con el nombre de la persona
+            :param name: detected face known or unknown one
+            :return:
             """
             with open('Attendance.csv', 'a') as f:
                 date_time_string = datetime.datetime.now().strftime("%y/%m/%d %H:%M:%S")
@@ -106,9 +84,8 @@ class mainFunctionsController(QDialog):
         return frame
 
     def update_frame(self):
-        selfUi = self.ui
-        ret, self.image = selfUi.capture.read()
-        self.displayImage(self.image, selfUi.encode_list, selfUi.class_names, 1)
+        ret, self.image = self.capture.read()
+        self.displayImage(self.image, self.encode_list, self.class_names, 1)
 
     def displayImage(self, image, encode_list, class_names, window=1):
         """
@@ -118,7 +95,6 @@ class mainFunctionsController(QDialog):
         :param window: number of window
         :return:
         """
-        selfUi = self.ui
         image = cv2.resize(image, (640, 480))
         try:
             image = self.face_rec_(image, encode_list, class_names)
@@ -134,11 +110,5 @@ class mainFunctionsController(QDialog):
         outImage = outImage.rgbSwapped()
 
         if window == 1:
-            selfUi.video.setPixmap(QPixmap.fromImage(outImage))
-            selfUi.video.setScaledContents(True)
-
-        
-        
-        
-        
-        
+            self.imgLabel.setPixmap(QPixmap.fromImage(outImage))
+            self.imgLabel.setScaledContents(True)
