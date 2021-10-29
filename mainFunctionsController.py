@@ -4,15 +4,16 @@ import face_recognition
 import numpy as np
 import datetime
 import os
-import CamaraTest, recognition
 from view.mainFunctions import mainFunctions
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.uic import loadUi
 from PyQt5.QtCore import pyqtSlot, QTimer
 from PyQt5.QtWidgets import QDialog
+from PIL import ImageQt
 
 cancel = False
+saveImg = False
 
 class mainFunctionsController(QDialog):
     def __init__(self):
@@ -30,14 +31,25 @@ class mainFunctionsController(QDialog):
         
     def btnConfirmAction(self):
         self.cancel = False
-        self.startVideo("0")
-        
+        self.saveImg = False
+
+        if(self.ui.radioBtnSearch.isChecked()):
+            self.startVideo("0")
+        elif(self.ui.radioBtnDetect.isChecked()):
+            #Go to detect
+            print("detect")
+            
+            
     def btnCancelAction(self):
         print("cancel")        
         self.cancel = True
+        self.saveImg = False
         self.ui.video.setPixmap(QPixmap("default.jpg"))
         
-        
+    def guardarImagen(self):
+        self.saveImg = True
+        print("Guardando imagen")
+        self.startVideo("0")
         
         
         
@@ -56,27 +68,28 @@ class mainFunctionsController(QDialog):
             self.capture = cv2.VideoCapture(camera_name)
             print("camara usb")
         timer = QTimer(selfAux)  # Create Timer
-        path = 'img'
-        if not os.path.exists(path):
-            os.mkdir(path)
-            print("Folder created")
-        # Reconoce el rostro de las imagenes guardadas en img
-        print("Ansalizando imagenes guardadas")
-        images = []
-        self.class_names = []
-        self.encode_list = []
-        attendance_list = os.listdir(path)
-        print(attendance_list)
-        for cl in attendance_list:
-            cur_img = cv2.imread(f'{path}/{cl}')
-            images.append(cur_img)
-            self.class_names.append(os.path.splitext(cl)[0])
-        for img in images:
-            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-            boxes = face_recognition.face_locations(img)
-            encodes_cur_frame = face_recognition.face_encodings(img, boxes)[0]
-            # encode = face_recognition.face_encodings(img)[0]
-            self.encode_list.append(encodes_cur_frame)
+        if(not selfAux.saveImg):
+            path = 'img'
+            if not os.path.exists(path):
+                os.mkdir(path)
+                print("Folder created")
+            # Reconoce el rostro de las imagenes guardadas en img
+            print("Analizando imagenes guardadas")
+            images = []
+            self.class_names = []
+            self.encode_list = []
+            attendance_list = os.listdir(path)
+            print(attendance_list)
+            for cl in attendance_list:
+                cur_img = cv2.imread(f'{path}/{cl}')
+                images.append(cur_img)
+                self.class_names.append(os.path.splitext(cl)[0])
+            for img in images:
+                img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+                boxes = face_recognition.face_locations(img)
+                encodes_cur_frame = face_recognition.face_encodings(img, boxes)[0]
+                # encode = face_recognition.face_encodings(img)[0]
+                self.encode_list.append(encodes_cur_frame)
         timer.timeout.connect(selfAux.update_frame)  # Conecta una funcion al timer con 40 ms
         timer.start(20)  
             
@@ -106,7 +119,7 @@ class mainFunctionsController(QDialog):
             name = "unknown"
             best_match_index = np.argmin(face_dis)
             # print("s",best_match_index)
-            if match[best_match_index]:
+            if match[best_match_index] :
                 name = class_names[best_match_index].upper()
                 y1, x2, y2, x1 = faceLoc
                 cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
@@ -147,6 +160,9 @@ class mainFunctionsController(QDialog):
             #print("Mostrando imagen")
             selfUi.video.setPixmap(QPixmap.fromImage(outImage))
             selfUi.video.setScaledContents(True)
+            if(self.saveImg ): 
+                image = ImageQt.fromqpixmap(selfUi.video.pixmap())
+                image.save('test.png')
 
         
         
