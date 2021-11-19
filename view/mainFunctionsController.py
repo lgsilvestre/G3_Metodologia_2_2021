@@ -11,6 +11,32 @@ from PyQt5.uic import loadUi
 from PyQt5.QtCore import pyqtSlot, QTimer
 from PyQt5.QtWidgets import QDialog
 from PIL import ImageQt
+import subprocess
+
+
+import glob
+import os
+
+from PyInstaller.utils.hooks import collect_dynamic_libs
+from PyInstaller import compat
+
+hiddenimports = ['numpy'] 
+
+# On Windows, make sure that opencv_videoio_ffmpeg*.dll is bundled
+binaries = []
+if compat.is_win:
+    # If conda is active, look for the DLL in its library path
+    if compat.is_conda:
+        libdir = os.path.join(compat.base_prefix, 'Library', 'bin')
+        pattern = os.path.join(libdir, 'opencv_videoio_ffmpeg*.dll')
+        for f in glob.glob(pattern):
+            binaries.append((f, '.'))
+
+    # Include any DLLs from site-packages/cv2 (opencv_videoio_ffmpeg*.dll
+    # can be found there in the PyPI version)
+    
+    binaries += collect_dynamic_libs('cv2')
+    
 
 cancel = False
 saveImg = False
@@ -38,6 +64,8 @@ class mainFunctionsController(QDialog):
         elif(self.ui.radioBtnDetect.isChecked()):
             #Go to detect
             print("detect")
+            import view.DetectFaces
+
             
             
     def btnCancelAction(self):
@@ -50,13 +78,10 @@ class mainFunctionsController(QDialog):
         self.saveImg = True
         print("Guardando imagen")
         self.startVideo("0")
-        
-        
-        
+             
     def startVideo(self, camera_name):
         selfAux = self
         self = self.ui
-        
         """
         Busca las camaras disponibles
         """
@@ -68,6 +93,7 @@ class mainFunctionsController(QDialog):
             self.capture = cv2.VideoCapture(camera_name)
             print("camara usb")
         timer = QTimer(selfAux)  # Create Timer
+        
         if(not selfAux.saveImg):
             path = 'img'
             if not os.path.exists(path):
@@ -153,6 +179,8 @@ class mainFunctionsController(QDialog):
                 qformat = QImage.Format_RGBA8888
             else:
                 qformat = QImage.Format_RGB888
+                
+                
         outImage = QImage(image, image.shape[1], image.shape[0], image.strides[0], qformat)
         outImage = outImage.rgbSwapped()
 
@@ -160,11 +188,10 @@ class mainFunctionsController(QDialog):
             #print("Mostrando imagen")
             selfUi.video.setPixmap(QPixmap.fromImage(outImage))
             selfUi.video.setScaledContents(True)
-            if(self.saveImg ): 
+            if(self.saveImg ):
                 image = ImageQt.fromqpixmap(selfUi.video.pixmap())
                 image.save('test.png')
         
         
-        
-        
+     
         
