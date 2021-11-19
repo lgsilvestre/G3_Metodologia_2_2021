@@ -7,7 +7,7 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-
+import mainFunctionsController
 
 
 
@@ -62,11 +62,19 @@ class Ui_Dialog(object):
         self.adminBtn.setObjectName("adminBtn")
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
-        
+
+        User = self.lineEditUser.text()
+        Pass = self.lineEditPass.text()
+        with open("Cuentas.txt",'w') as f:
+            f.write("OK")
+            f.write(User)
+            f.write(",")
+            f.write(Pass)
+
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
+        Dialog.setWindowTitle(_translate("El Portero", "El Portero"))
         self.btnConfirm.setText(_translate("Dialog", "Confirmar"))
         self.label.setText(_translate("Dialog", "Usuario:"))
         self.label_2.setText(_translate("Dialog", "Contraseña:"))
