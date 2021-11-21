@@ -163,8 +163,3 @@ class mainFunctionsController(QDialog):
             if(self.saveImg ): 
                 image = ImageQt.fromqpixmap(selfUi.video.pixmap())
                 image.save('test.png')
-        
-        
-        
-        
-        

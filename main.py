@@ -1,5 +1,7 @@
 import sys
+from UsuarioController import UsuarioController
 from mainFunctionsController import mainFunctionsController
+from UsuarioController import UsuarioController
 from view.login import Ui_Dialog
 from view.mainFunctions import mainFunctions
 from PyQt5.QtWidgets import QMainWindow, QApplication,QDialog
@@ -11,17 +13,24 @@ class MainWindow(QDialog):
         super(MainWindow, self).__init__()
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
+        self.ui
         self.BtnActions()
         self.show()
     
     def BtnActions(self):
         self.ui.btnConfirm.clicked.connect(self.btnConfirmAction)
+        self.ui.pushButton.clicked.connect(self.pushBtnConfirmAction)
+        
 
-    #Call new QDialog called mainFunctions.py and show it to the user
+   
     def btnConfirmAction(self):
         self.close()
         startMainFunctionsController = mainFunctionsController()
         startMainFunctionsController.exec_()
+
+    def pushBtnConfirmAction(self):
+        startUsuario = UsuarioController()
+        startUsuario.exec_()
 
 
 
