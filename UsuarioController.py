@@ -11,5 +11,20 @@ class UsuarioController(QDialog):
         super(UsuarioController, self).__init__()
         self.ui = user()
         self.ui.setupUi(self)
-        self.image = None
+        self.btnActions()
         self.show()
+
+    def btnActions(self):
+        self.ui.pushButton.clicked.connect(self.pushAction)
+
+    def pushAction(self):
+        User = self.ui.lineEdit_2.text()
+        Pass = self.ui.lineEdit.text()
+        if (User and Pass):
+            with open('Cuentas.txt','a') as f:
+                f.write(User)
+                f.write(",")
+                f.write(Pass)
+                f.write("\n")
+                f.close()
+        self.close()

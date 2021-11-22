@@ -40,6 +40,7 @@ class user(object):
         self.pushButton.setText(_translate("Dialog", "Ok"))
         self.label.setText(_translate("Dialog", "Crear Usuario:"))
         self.label_2.setText(_translate("Dialog", "Crear Contraseña:"))
+        self.lineEdit.setEchoMode(QtWidgets.QLineEdit.Password)
 
 if __name__ == "__main__":
     import sys
