@@ -25,6 +25,6 @@ class UsuarioController(QDialog):
                 f.write(User)
                 f.write(",")
                 f.write(Pass)
-                f.write("\n")
+                f.write('\n')
                 f.close()
         self.close()

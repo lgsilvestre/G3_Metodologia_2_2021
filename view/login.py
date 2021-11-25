@@ -68,7 +68,7 @@ class Ui_Dialog(object):
         self.pushButton.setObjectName("pushButton")
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
-
+        self.lineEditPass.setEchoMode(QtWidgets.QLineEdit.Password)
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
