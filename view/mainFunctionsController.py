@@ -1,9 +1,11 @@
-import sys
+
 import cv2
 import face_recognition
 import numpy as np
 import datetime
 import os
+
+from pkg_resources import SOURCE_DIST
 from view.mainFunctions import mainFunctions
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QImage, QPixmap
@@ -11,7 +13,6 @@ from PyQt5.uic import loadUi
 from PyQt5.QtCore import pyqtSlot, QTimer
 from PyQt5.QtWidgets import QDialog
 from PIL import ImageQt
-import subprocess
 
 
 import glob
@@ -58,13 +59,13 @@ class mainFunctionsController(QDialog):
     def btnConfirmAction(self):
         self.cancel = False
         self.saveImg = False
+        
 
         if(self.ui.radioBtnSearch.isChecked()):
-            self.startVideo("0")
+            self.startVideo('0')
         elif(self.ui.radioBtnDetect.isChecked()):
             #Go to detect
-            print("detect")
-            import view.DetectFaces
+            self.detectFaces()
 
             
             
@@ -72,13 +73,39 @@ class mainFunctionsController(QDialog):
         print("cancel")        
         self.cancel = True
         self.saveImg = False
+        self.ui.capture.release()
         self.ui.video.setPixmap(QPixmap("default.jpg"))
         
     def guardarImagen(self):
         self.saveImg = True
         print("Guardando imagen")
         self.startVideo("0")
-             
+              
+    # Deteccion facial
+    #Crea una ventana donde reconoce el rostro y dibuja un rectangulo 
+    def detectFaces(self):
+        
+        face_cascade = cv2.CascadeClassifier('view/dataSet.xml')
+        video = cv2.VideoCapture(0)
+        while True:
+            check, frame = video.read()
+            faces = face_cascade.detectMultiScale(frame,
+                                                scaleFactor=1.1, minNeighbors=5)
+            for x,y,w,h in faces:
+                frame = cv2.rectangle(frame, (x,y), (x+w,y+h), (0,255,0), 3)
+
+            cv2.imshow('Detectando rostro', frame)
+            
+            key = cv2.waitKey(1)
+            if key == ord('q'):
+                break
+            if cv2.getWindowProperty('Detectando rostro',cv2.WND_PROP_VISIBLE) < 1:        
+                break 
+
+        video.release()
+            
+    #Algoritmo de deteccion de rostros numero 1    
+        
     def startVideo(self, camera_name):
         selfAux = self
         self = self.ui
@@ -156,8 +183,11 @@ class mainFunctionsController(QDialog):
 
     def update_frame(self):
         selfUi = self.ui
-        ret, self.image = selfUi.capture.read()
-        self.displayImage(self.image, selfUi.encode_list, selfUi.class_names, 1)
+        if(self.cancel == True):
+            selfUi.capture.release()
+        else:
+            ret, self.image = selfUi.capture.read()
+            self.displayImage(self.image, selfUi.encode_list, selfUi.class_names, 1)
 
     def displayImage(self, image, encode_list, class_names, window=1):
         """
@@ -167,31 +197,37 @@ class mainFunctionsController(QDialog):
         :param window: number of window
         :return:
         """
+        
         selfUi = self.ui
-        image = cv2.resize(image, (640, 480))
-        try:
-            image = self.face_rec_(image, encode_list, class_names)
-        except Exception as e:
-            print(e)
-        qformat = QImage.Format_Indexed8
-        if len(image.shape) == 3:
-            if image.shape[2] == 4:
-                qformat = QImage.Format_RGBA8888
-            else:
-                qformat = QImage.Format_RGB888
-                
-                
-        outImage = QImage(image, image.shape[1], image.shape[0], image.strides[0], qformat)
-        outImage = outImage.rgbSwapped()
+        if(self.cancel == True):
+            selfUi.capture.release()
+        else:     
+            image = cv2.resize(image, (640, 480))
+            try:
+                image = self.face_rec_(image, encode_list, class_names)
+            except Exception as e:
+                print(e)
+            qformat = QImage.Format_Indexed8
+            if len(image.shape) == 3:
+                if image.shape[2] == 4:
+                    qformat = QImage.Format_RGBA8888
+                else:
+                    qformat = QImage.Format_RGB888
+                    
+                    
+            outImage = QImage(image, image.shape[1], image.shape[0], image.strides[0], qformat)
+            outImage = outImage.rgbSwapped()
 
-        if window == 1 and self.cancel == False:
-            #print("Mostrando imagen")
-            selfUi.video.setPixmap(QPixmap.fromImage(outImage))
-            selfUi.video.setScaledContents(True)
-            if(self.saveImg ):
-                image = ImageQt.fromqpixmap(selfUi.video.pixmap())
-                image.save('test.png')
+            if window == 1 and self.cancel == False:
+                #print("Mostrando imagen")
+                selfUi.video.setPixmap(QPixmap.fromImage(outImage))
+                selfUi.video.setScaledContents(True)
+                if(self.saveImg ):
+                    image = ImageQt.fromqpixmap(selfUi.video.pixmap())
+                    image.save('test.png')
+
+            
         
         
-     
+        
         
