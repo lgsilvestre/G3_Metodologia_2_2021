@@ -106,7 +106,7 @@ class mainFunctionsController(QDialog):
         else:
             self.capture = cv2.VideoCapture(camera_name)
             print("camara usb")
-        timer = QTimer(selfAux)  # Create Timer
+        selfAux.timer = QTimer(selfAux)  # Create Timer
         
         if(not selfAux.saveImg):
             path = 'img'
@@ -130,9 +130,9 @@ class mainFunctionsController(QDialog):
                 encodes_cur_frame = face_recognition.face_encodings(img, boxes)[0]
                 # encode = face_recognition.face_encodings(img)[0]
                 self.encode_list.append(encodes_cur_frame)
-        timer.timeout.connect(selfAux.update_frame)  # Conecta una funcion al timer con 40 ms
-        timer.start(20)  
-            
+        if(not selfAux.cancel):
+            selfAux.timer.timeout.connect(selfAux.update_frame)  # Conecta una funcion al timer con 40 ms
+        selfAux.timer.start(20)  
         print("fin reconocimiento de imagenes guardadas")
 
     def face_rec_(self, frame, encode_list_known, class_names):
@@ -172,6 +172,13 @@ class mainFunctionsController(QDialog):
         selfUi = self.ui
         ret, self.image = selfUi.capture.read()
         self.displayImage(self.image, selfUi.encode_list, selfUi.class_names, 1)
+        if(self.cancel == True):
+            selfUi.capture.release()
+            self.timer.stop()
+            print("Cancelar timer ")
+        else:
+            ret, self.image = selfUi.capture.read()
+            self.displayImage(self.image, selfUi.encode_list, selfUi.class_names, 1)
 
     def displayImage(self, image, encode_list, class_names, window=1):
         """
