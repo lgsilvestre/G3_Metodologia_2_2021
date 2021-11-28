@@ -11,7 +11,6 @@ from PyQt5.uic import loadUi
 from PyQt5.QtCore import pyqtSlot, QTimer
 from PyQt5.QtWidgets import QDialog
 from PIL import ImageQt
-import subprocess
 
 
 import glob
@@ -54,7 +53,11 @@ class mainFunctionsController(QDialog):
     def BtnActions(self):   
         self.ui.btnConfirm.clicked.connect(self.btnConfirmAction)
         self.ui.btnCancel.clicked.connect(self.btnCancelAction)        
+        self.ui.radioBtnDetect.clicked.connect(self.resetRadioBtnStatus)
         
+        self.ui.radioButton.clicked.connect(self.detectCheckInBtnDetect)
+        self.ui.radioButton_2.clicked.connect(self.detectCheckInBtnDetect)
+        self.ui.radioButton_3.clicked.connect(self.detectCheckInBtnDetect)
     def btnConfirmAction(self):
         self.cancel = False
         self.saveImg = False
@@ -67,20 +70,9 @@ class mainFunctionsController(QDialog):
         elif(self.ui.radioBtnSearch.isChecked() and self.ui.radioButton_3.isChecked()):
             #Busqueda con algoritmo 3 no realizado todavia
             print("busqueda algoritmo 3 no relizado")
-        elif(self.ui.radioBtnDetect.isChecked() and self.ui.radioButton.isChecked()):
+        elif(self.ui.radioBtnDetect.isChecked()):
             #Go to detect
-            print("detect algoritmo 3")
-            import view.DetectFaces
-        elif(self.ui.radioBtnDetect.isChecked() and self.ui.radioButton_2.isChecked()):
-            #Go to detect
-            print("detect algoritmo 3")
-            import view.DetectFaces
-        elif(self.ui.radioBtnDetect.isChecked() and self.ui.radioButton_3.isChecked()):
-            #Go to detect
-            print("detect algoritmo 3")
-            import view.DetectFaces
-
-            
+            self.detectFaces()
             
     def btnCancelAction(self):
         print("cancel")        
@@ -92,7 +84,42 @@ class mainFunctionsController(QDialog):
         self.saveImg = True
         print("Guardando imagen")
         self.startVideo("0")
-             
+        
+    #Comprueba que los botones de seleccion de algoritmo no esten activos  
+    def detectCheckInBtnDetect(self):
+        if(self.ui.radioBtnDetect.isChecked()):
+            self.resetRadioBtnStatus()
+            
+    def resetRadioBtnStatus(self):
+        self.ui.radioBtnSearch.setChecked(False)  
+        self.ui.radioButton.setChecked(False) 
+        self.ui.radioButton_2.setChecked(False)  
+        self.ui.radioButton_3.setChecked(False)   
+        print("Reseteando estado de los radiobotones")
+         
+           
+    # Deteccion facial
+    #Crea una ventana donde reconoce el rostro y dibuja un rectangulo 
+    def detectFaces(self):
+        face_cascade = cv2.CascadeClassifier('view/dataSet.xml')
+        video = cv2.VideoCapture(0)
+        while True:
+            check, frame = video.read()
+            faces = face_cascade.detectMultiScale(frame,
+                                                scaleFactor=1.1, minNeighbors=5)
+            for x,y,w,h in faces:
+                frame = cv2.rectangle(frame, (x,y), (x+w,y+h), (0,255,0), 3)
+
+            cv2.imshow('Detectando rostro', frame)
+            
+            key = cv2.waitKey(1)
+            if key == ord('q'):
+                break
+            if cv2.getWindowProperty('Detectando rostro',cv2.WND_PROP_VISIBLE) < 1:        
+                break 
+        video.release()
+              
+ #Implementacion algoritmo de reconocimiento número 1                 
     def startVideo(self, camera_name):
         selfAux = self
         self = self.ui
