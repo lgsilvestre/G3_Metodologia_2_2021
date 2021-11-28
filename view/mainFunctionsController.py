@@ -53,11 +53,12 @@ class mainFunctionsController(QDialog):
     def BtnActions(self):   
         self.ui.btnConfirm.clicked.connect(self.btnConfirmAction)
         self.ui.btnCancel.clicked.connect(self.btnCancelAction)        
-        self.ui.radioBtnDetect.clicked.connect(self.resetRadioBtnStatus)
-        
+        self.ui.radioBtnDetect.clicked.connect(self.radioBtnStatusFalse)
+        self.ui.radioBtnSearch.clicked.connect(self.radioBtnStatusTrue)
         self.ui.radioButton.clicked.connect(self.detectCheckInBtnDetect)
         self.ui.radioButton_2.clicked.connect(self.detectCheckInBtnDetect)
         self.ui.radioButton_3.clicked.connect(self.detectCheckInBtnDetect)
+        
     def btnConfirmAction(self):
         self.cancel = False
         self.saveImg = False
@@ -88,15 +89,28 @@ class mainFunctionsController(QDialog):
     #Comprueba que los botones de seleccion de algoritmo no esten activos  
     def detectCheckInBtnDetect(self):
         if(self.ui.radioBtnDetect.isChecked()):
-            self.resetRadioBtnStatus()
+            self.radioBtnStatusFalse()
+            self.radioBtnStatusTrue()
             
-    def resetRadioBtnStatus(self):
-        self.ui.radioBtnSearch.setChecked(False)  
-        self.ui.radioButton.setChecked(False) 
-        self.ui.radioButton_2.setChecked(False)  
-        self.ui.radioButton_3.setChecked(False)   
-        print("Reseteando estado de los radiobotones")
-         
+    def radioBtnStatusFalse(self):
+        self.ui.radioButton.hide()
+        self.ui.radioButton_2.hide()
+        self.ui.radioButton_3.hide()
+
+        self.ui.radioButton.setCheckable(False) 
+        self.ui.radioButton_2.setCheckable(False)  
+        self.ui.radioButton_3.setCheckable(False)
+        
+        self.ui.radioButton.show()
+        self.ui.radioButton_2.show()
+        self.ui.radioButton_3.show()
+        
+        
+    def radioBtnStatusTrue(self):
+        self.ui.radioButton.setCheckable(True) 
+        self.ui.radioButton_2.setCheckable(True)  
+        self.ui.radioButton_3.setCheckable(True)
+        
            
     # Deteccion facial
     #Crea una ventana donde reconoce el rostro y dibuja un rectangulo 
