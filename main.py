@@ -1,5 +1,5 @@
 import sys, os
-from view.mainFunctionsController import mainFunctionsController
+from controllers.mainFunctionsController import mainFunctionsController
 from view.login import Ui_Dialog
 from view.mainFunctions import mainFunctions
 from PyQt5.QtWidgets import QMainWindow, QApplication,QDialog

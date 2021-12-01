@@ -54,12 +54,11 @@ class Ui_Dialog(object):
         self.frame_2.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame_2.setObjectName("frame_2")
         self.frame_3= QtWidgets.QFrame(self.frameLogin) #Prueba para hacer el cuadro 
-        self.frame_3.setGeometry(QtCore.QRect(200,170,230,150))
+        self.frame_3.setGeometry(QtCore.QRect(100,170,230,150))
         self.frame_3.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame_3.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame_3.setStyleSheet("Background-Color: Red;")
         self.frame_3.setObjectName("frame_3")
-
         self.superAdminBtn = QtWidgets.QPushButton(self.frame_2)
         self.superAdminBtn.setGeometry(QtCore.QRect(110, 10, 121, 23))
         self.superAdminBtn.setObjectName("superAdminBtn")
