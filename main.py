@@ -31,12 +31,14 @@ if compat.is_win:
 
     
 class MainWindow(QDialog):
-    def __init__(self):
+    def __init__(self):        
         super(MainWindow, self).__init__()
+        self.setMinimumSize(800,600)
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
         self.BtnActions()
         self.show()
+        
     
     def BtnActions(self):
         self.ui.btnConfirm.clicked.connect(self.btnConfirmAction)
