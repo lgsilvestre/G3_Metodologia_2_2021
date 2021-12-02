@@ -9,7 +9,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QComboBox, QDialog
 import sys
 
 
@@ -69,6 +69,7 @@ class Ui_Dialog(object):
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
         self.lineEditPass.setEchoMode(QtWidgets.QLineEdit.Password)
+
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Dialog"))

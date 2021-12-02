@@ -15,9 +15,9 @@ class user(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
         Dialog.resize(400, 300)
-        self.pushButton = QtWidgets.QPushButton(Dialog)
-        self.pushButton.setGeometry(QtCore.QRect(150, 200, 75, 23))
-        self.pushButton.setObjectName("pushButton")
+        #self.pushButton = QtWidgets.QPushButton(Dialog)
+        #self.pushButton.setGeometry(QtCore.QRect(150, 200, 75, 23))
+        #self.pushButton.setObjectName("pushButton")
         self.lineEdit = QtWidgets.QLineEdit(Dialog)
         self.lineEdit.setGeometry(QtCore.QRect(140, 130, 113, 20))
         self.lineEdit.setObjectName("lineEdit")
@@ -30,14 +30,26 @@ class user(object):
         self.label_2 = QtWidgets.QLabel(Dialog)
         self.label_2.setGeometry(QtCore.QRect(30, 130, 101, 20))
         self.label_2.setObjectName("label_2")
-
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
+        self.superAdminBtn = QtWidgets.QPushButton(Dialog)
+        self.superAdminBtn.setGeometry(QtCore.QRect(150,200, 75, 23))
+        self.superAdminBtn.setObjectName("superAdminBtn")
+        self.userBtn = QtWidgets.QPushButton(Dialog)
+        self.userBtn.setGeometry(QtCore.QRect(230, 200, 75, 23))
+        self.userBtn.setObjectName("userBtn")
+        self.adminBtn = QtWidgets.QPushButton(Dialog)
+        self.adminBtn.setGeometry(QtCore.QRect(70, 200, 75, 23))
+        self.adminBtn.setObjectName("adminBtn")
+        self.userBtn.setText("Usuario")
+        self.adminBtn.setText("Admin")
+        self.superAdminBtn.setText("SuperAdmin")
+
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
-        self.pushButton.setText(_translate("Dialog", "Ok"))
+        #self.pushButton.setText(_translate("Dialog", "Ok"))
         self.label.setText(_translate("Dialog", "Crear Usuario:"))
         self.label_2.setText(_translate("Dialog", "Crear Contraseña:"))
         self.lineEdit.setEchoMode(QtWidgets.QLineEdit.Password)

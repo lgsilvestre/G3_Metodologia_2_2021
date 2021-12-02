@@ -15,13 +15,39 @@ class UsuarioController(QDialog):
         self.show()
 
     def btnActions(self):
-        self.ui.pushButton.clicked.connect(self.pushAction)
+        self.ui.userBtn.clicked.connect(self.pushActionUser)
+        self.ui.adminBtn.clicked.connect(self.pushActionAdmin)
+        self.ui.superAdminBtn.clicked.connect(self.pushActionSuperAdmin)
 
-    def pushAction(self):
+    def pushActionUser(self):
         User = self.ui.lineEdit_2.text()
         Pass = self.ui.lineEdit.text()
         if (User and Pass):
-            with open('Cuentas.txt','a') as f:
+            with open('CuentasUser.txt','a') as f:
+                f.write(User)
+                f.write(",")
+                f.write(Pass)
+                f.write('\n')
+                f.close()
+        self.close()
+    
+    def pushActionAdmin(self):
+        User = self.ui.lineEdit_2.text()
+        Pass = self.ui.lineEdit.text()
+        if (User and Pass):
+            with open('CuentasAdmin.txt','a') as f:
+                f.write(User)
+                f.write(",")
+                f.write(Pass)
+                f.write('\n')
+                f.close()
+        self.close()
+
+    def pushActionSuperAdmin(self):
+        User = self.ui.lineEdit_2.text()
+        Pass = self.ui.lineEdit.text()
+        if (User and Pass):
+            with open('CuentasSuperAdmin.txt','a') as f:
                 f.write(User)
                 f.write(",")
                 f.write(Pass)
