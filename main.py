@@ -1,3 +1,4 @@
+from os import truncate
 import sys
 from UsuarioController import UsuarioController
 from mainFunctionsController import mainFunctionsController
@@ -17,12 +18,21 @@ class MainWindow(QDialog):
         self.show()
     
     def BtnActions(self):
-        self.ui.userBtn.clicked.connect(self.btnConfirmActionUser) 
-        self.ui.adminBtn.clicked.connect(self.btnConfirmActionAdmin)
-        self.ui.superAdminBtn.clicked.connect(self.btnConfirmActionSuperAdmin)
+        self.ui.userBtn.clicked.connect(lambda:self.confirmOption(0))
+        self.ui.adminBtn.clicked.connect(lambda:self.confirmOption(1))
+        self.ui.superAdminBtn.clicked.connect(lambda:self.confirmOption(2))
+
+        #Creacion de usuario
         self.ui.pushButton.clicked.connect(self.pushBtnConfirmAction)
         
 
+    def confirmOption(self,checked):
+        if(checked == 0):
+            self.ui.btnConfirm.clicked.connect(self.btnConfirmActionUser)
+        elif(checked == 1):
+            self.ui.btnConfirm.clicked.connect(self.btnConfirmActionAdmin)
+        elif(checked == 2):
+            self.ui.btnConfirm.clicked.connect(self.btnConfirmActionSuperAdmin)
    
     def btnConfirmActionUser(self):
         with open("CuentasUser.txt","r") as f:
