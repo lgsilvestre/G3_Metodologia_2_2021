@@ -1,53 +1,54 @@
-import cv2
-import os
-dataPath = 'img' #Cambia a la ruta donde hayas almacenado Data
-imagePaths = os.listdir(dataPath)
-print('imagePaths=',imagePaths)
-face_recognizer = cv2.face.EigenFaceRecognizer_create()
-# Leyendo el modelo
-face_recognizer.read('modeloEigenFace.xml')
-cap = cv2.VideoCapture(0,cv2.CAP_DSHOW)
-cap = cv2.VideoCapture('Video.mp4')
-faceClassif = cv2.CascadeClassifier(cv2.data.haarcascades+'haarcascade_frontalface_default.xml')
+import cv2, sys, numpy, os
+size = 4
+haar_file = 'haarcascade_frontalface_default.xml'
+datasets = 'img'
+# Part 1: Create fisherRecognizer
+print('Recognizing Face Please Be in sufficient Light Conditions...')
+# Create a list of images and a list of corresponding names
+(images, lables, names, id) = ([], [], {}, 0)
+for (subdirs, dirs, files) in os.walk(datasets):
+    for subdir in dirs:
+        names[id] = subdir
+        subjectpath = os.path.join(datasets, subdir)
+        for filename in os.listdir(subjectpath):
+            path = subjectpath + '/' + filename
+            lable = id
+            images.append(cv2.imread(path, 0))
+            lables.append(int(lable))
+        id += 1
+(width, height) = (130, 100)
+
+# Create a Numpy array from the two lists above
+(images, lables) = [numpy.array(lis) for lis in [images, lables]]
+
+# OpenCV trains a model from the images
+# NOTE FOR OpenCV2: remove '.face'
+model = cv2.face.LBPHFaceRecognizer_create()
+model.train(images, lables)
+
+# Part 2: Use fisherRecognizer on camera stream
+face_cascade = cv2.CascadeClassifier(haar_file)
+webcam = cv2.VideoCapture(0)
 while True:
-    ret,frame = cap.read()
-    if ret == False: break
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    auxFrame = gray.copy()
-    faces = faceClassif.detectMultiScale(gray,1.3,5)
+    (_, im) = webcam.read()
+    gray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
+    faces = face_cascade.detectMultiScale(gray, 1.3, 5)
     for (x,y,w,h) in faces:
-        rostro = auxFrame[y:y+h,x:x+w]
-        rostro = cv2.resize(rostro,(150,150),interpolation= cv2.INTER_CUBIC)
-        result = face_recognizer.predict(rostro)
-        cv2.putText(frame,'{}'.format(result),(x,y-5),1,1.3,(255,255,0),1,cv2.LINE_AA)
-        '''
-        # EigenFaces
-        if result[1] < 5700:
-            cv2.putText(frame,'{}'.format(imagePaths[result[0]]),(x,y-25),2,1.1,(0,255,0),1,cv2.LINE_AA)
-            cv2.rectangle(frame, (x,y),(x+w,y+h),(0,255,0),2)
+        cv2.rectangle(im,(x,y),(x+w,y+h),(255,0,0),2)
+        face = gray[y:y + h, x:x + w]
+        face_resize = cv2.resize(face, (width, height))
+        # Try to recognize the face
+        prediction = model.predict(face_resize)
+        cv2.rectangle(im, (x, y), (x + w, y + h), (0, 255, 0), 3)
+
+        if prediction[1]<500:
+            cv2.putText(im,'%s - %.0f' % (names[prediction[0]],prediction[1]),(x-10, y-10), cv2.FONT_HERSHEY_PLAIN,1,(0, 255, 0))
+    	
         else:
-            cv2.putText(frame,'Desconocido',(x,y-20),2,0.8,(0,0,255),1,cv2.LINE_AA)
-            cv2.rectangle(frame, (x,y),(x+w,y+h),(0,0,255),2)
-        
-        # FisherFace
-        if result[1] < 500:
-            cv2.putText(frame,'{}'.format(imagePaths[result[0]]),(x,y-25),2,1.1,(0,255,0),1,cv2.LINE_AA)
-            cv2.rectangle(frame, (x,y),(x+w,y+h),(0,255,0),2)
-        else:
-            cv2.putText(frame,'Desconocido',(x,y-20),2,0.8,(0,0,255),1,cv2.LINE_AA)
-            cv2.rectangle(frame, (x,y),(x+w,y+h),(0,0,255),2)
-        
-        # LBPHFace
-        if result[1] < 70:
-            cv2.putText(frame,'{}'.format(imagePaths[result[0]]),(x,y-25),2,1.1,(0,255,0),1,cv2.LINE_AA)
-            cv2.rectangle(frame, (x,y),(x+w,y+h),(0,255,0),2)
-        else:
-            cv2.putText(frame,'Desconocido',(x,y-20),2,0.8,(0,0,255),1,cv2.LINE_AA)
-            cv2.rectangle(frame, (x,y),(x+w,y+h),(0,0,255),2)
-        '''
-    cv2.imshow('frame',frame)
-    k = cv2.waitKey(1)
-    if k == 27:
+            cv2.putText(im,'not recognized',(x-10, y-10), cv2.FONT_HERSHEY_PLAIN,1,(0, 255, 0))
+
+    cv2.imshow('OpenCV', im)
+    
+    key = cv2.waitKey(10)
+    if key == 27:
         break
-cap.release()
-cv2.destroyAllWindows()
