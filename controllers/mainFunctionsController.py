@@ -5,6 +5,8 @@ import numpy as np
 import datetime
 import os
 from view.mainFunctions import mainFunctions
+from model.DetectFaces import detectFaces
+from model.Algorithm1 import algorithm1
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.uic import loadUi
@@ -64,7 +66,7 @@ class mainFunctionsController(QDialog):
         self.saveImg = False
 
         if(self.ui.radioBtnSearch.isChecked() and self.ui.radioButton.isChecked()):
-            self.startVideo("0")
+            self.startVideo('0')
         elif(self.ui.radioBtnSearch.isChecked() and self.ui.radioButton_2.isChecked()):
             #Busqueda con algoritmo 2 no realizado todavia
             print("busqueda algoritmo 3 no relizado")
@@ -73,7 +75,7 @@ class mainFunctionsController(QDialog):
             print("busqueda algoritmo 3 no relizado")
         elif(self.ui.radioBtnDetect.isChecked()):
             #Go to detect
-            self.detectFaces()
+            detectFaces()
             
     def btnCancelAction(self):
         print("cancel")        
@@ -111,27 +113,7 @@ class mainFunctionsController(QDialog):
         self.ui.radioButton_2.setCheckable(True)  
         self.ui.radioButton_3.setCheckable(True)
         
-           
-    # Deteccion facial
-    #Crea una ventana donde reconoce el rostro y dibuja un rectangulo 
-    def detectFaces(self):
-        face_cascade = cv2.CascadeClassifier('view/dataSet.xml')
-        video = cv2.VideoCapture(0)
-        while True:
-            check, frame = video.read()
-            faces = face_cascade.detectMultiScale(frame,
-                                                scaleFactor=1.1, minNeighbors=5)
-            for x,y,w,h in faces:
-                frame = cv2.rectangle(frame, (x,y), (x+w,y+h), (0,255,0), 3)
-
-            cv2.imshow('Detectando rostro', frame)
-            
-            key = cv2.waitKey(1)
-            if key == ord('q'):
-                break
-            if cv2.getWindowProperty('Detectando rostro',cv2.WND_PROP_VISIBLE) < 1:        
-                break 
-        video.release()
+      
               
  #Implementacion algoritmo de reconocimiento número 1                 
     def startVideo(self, camera_name):
