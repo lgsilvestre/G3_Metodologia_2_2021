@@ -69,7 +69,7 @@ class mainFunctionsController(QDialog):
             self.startVideo('0')
         elif(self.ui.radioBtnSearch.isChecked() and self.ui.radioButton_2.isChecked()):
             #Busqueda con algoritmo 2 no realizado todavia
-            print("busqueda algoritmo 3 no relizado")
+            print("busqueda algoritmo 2 no relizado")
         elif(self.ui.radioBtnSearch.isChecked() and self.ui.radioButton_3.isChecked()):
             #Busqueda con algoritmo 3 no realizado todavia
             print("busqueda algoritmo 3 no relizado")
