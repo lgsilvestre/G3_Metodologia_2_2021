@@ -34,6 +34,7 @@ class MainWindow(QDialog):
     def __init__(self):        
         super(MainWindow, self).__init__()
         self.setMinimumSize(800,600)
+        self.setMaximumSize(800,600)
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
         self.BtnActions()

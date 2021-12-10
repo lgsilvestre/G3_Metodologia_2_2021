@@ -15,7 +15,8 @@ class mainFunctions(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
         Dialog.resize(1109, 600)
-        Dialog.setMinimumSize(800,600)
+        Dialog.setMinimumSize(1109,600)
+        Dialog.setMaximumSize(1109,600)
         self.horizontalLayout = QtWidgets.QHBoxLayout(Dialog)
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.frame = QtWidgets.QFrame(Dialog)
