@@ -39,7 +39,6 @@ class MainWindow(QDialog):
         super(MainWindow, self).__init__()
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
-        self.ui
         self.BtnActions()
         self.show()
     
@@ -130,11 +129,6 @@ class MainWindow(QDialog):
     def pushBtnConfirmAction(self):
         startUsuario = UsuarioController()
         startUsuario.exec_()
-
-
-
-
-
         self.ui.btnConfirm.clicked.connect(self.btnConfirmAction)
         
     #Call new QDialog called mainFunctions.py and show it to the user
