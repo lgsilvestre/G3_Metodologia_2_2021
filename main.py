@@ -1,3 +1,7 @@
+from os import truncate
+import sys
+from UsuarioController import UsuarioController
+from mainFunctionsController import mainFunctionsController
 import sys, os
 from controllers.mainFunctionsController import mainFunctionsController
 from view.login import Ui_Dialog
@@ -31,14 +35,109 @@ if compat.is_win:
 
     
 class MainWindow(QDialog):
-    def __init__(self):
+    def __init__(self):        
         super(MainWindow, self).__init__()
+        self.setMinimumSize(800,600)
+        self.setMaximumSize(800,600)
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
+        self.ui
         self.BtnActions()
         self.show()
+        
     
     def BtnActions(self):
+        self.ui.userBtn.clicked.connect(lambda:self.confirmOption(0))
+        self.ui.adminBtn.clicked.connect(lambda:self.confirmOption(1))
+        self.ui.superAdminBtn.clicked.connect(lambda:self.confirmOption(2))
+
+        #Creacion de usuario
+        self.ui.pushButton.clicked.connect(self.pushBtnConfirmAction)
+        
+
+    def confirmOption(self,checked):
+        if(checked == 0):
+            self.ui.btnConfirm.clicked.connect(self.btnConfirmActionUser)
+        elif(checked == 1):
+            self.ui.btnConfirm.clicked.connect(self.btnConfirmActionAdmin)
+        elif(checked == 2):
+            self.ui.btnConfirm.clicked.connect(self.btnConfirmActionSuperAdmin)
+   
+    def btnConfirmActionUser(self):
+        with open("CuentasUser.txt","r") as f:
+            for line in f:
+                if "," in line:
+                    separacion = line.split(",")
+                    User = separacion[0]
+                    final_User = User.translate({ord("\n"):None})
+                    compUser = self.ui.lineEditUser.text()
+                    compPass = self.ui.lineEditPass.text()
+                    if compUser == final_User:
+                        with open("CuentasUser.txt","r") as h:
+                            for line in h:
+                                if "," in line:
+                                    separacion = line.split(",")
+                                    Pass = separacion[1]
+                                    final_Pass = Pass.translate({ord("\n"):None})
+                                    compPass = self.ui.lineEditPass.text()
+                                    if compPass == final_Pass:
+                                        self.close()
+                                        startMainFunctionsController = mainFunctionsController()
+                                        startMainFunctionsController.exec_()
+
+    def btnConfirmActionAdmin(self):
+        with open("CuentasAdmin.txt","r") as f:
+            for line in f:
+                if "," in line:
+                    separacion = line.split(",")
+                    User = separacion[0]
+                    final_User = User.translate({ord("\n"):None})
+                    compUser = self.ui.lineEditUser.text()
+                    compPass = self.ui.lineEditPass.text()
+                    if compUser == final_User:
+                        with open("CuentasAdmin.txt","r") as h:
+                            for line in h:
+                                if "," in line:
+                                    separacion = line.split(",")
+                                    Pass = separacion[1]
+                                    final_Pass = Pass.translate({ord("\n"):None})
+                                    compPass = self.ui.lineEditPass.text()
+                                    if compPass == final_Pass:
+                                        self.close()
+                                        startMainFunctionsController = mainFunctionsController()
+                                        startMainFunctionsController.exec_()
+
+    def btnConfirmActionSuperAdmin(self):
+        with open("CuentasSuperAdmin.txt","r") as f:
+            for line in f:
+                if "," in line:
+                    separacion = line.split(",")
+                    User = separacion[0]
+                    final_User = User.translate({ord("\n"):None})
+                    compUser = self.ui.lineEditUser.text()
+                    compPass = self.ui.lineEditPass.text()
+                    if compUser == final_User:
+                        with open("CuentasSuperAdmin.txt","r") as h:
+                            for line in h:
+                                if "," in line:
+                                    separacion = line.split(",")
+                                    Pass = separacion[1]
+                                    final_Pass = Pass.translate({ord("\n"):None})
+                                    compPass = self.ui.lineEditPass.text()
+                                    if compPass == final_Pass:
+                                        self.close()
+                                        startMainFunctionsController = mainFunctionsController()
+                                        startMainFunctionsController.exec_()
+        
+
+    def pushBtnConfirmAction(self):
+        startUsuario = UsuarioController()
+        startUsuario.exec_()
+
+
+
+
+
         self.ui.btnConfirm.clicked.connect(self.btnConfirmAction)
         
     #Call new QDialog called mainFunctions.py and show it to the user
