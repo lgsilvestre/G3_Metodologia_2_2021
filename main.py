@@ -1,7 +1,6 @@
 from os import truncate
 import sys
 from UsuarioController import UsuarioController
-from mainFunctionsController import mainFunctionsController
 import sys, os
 from controllers.mainFunctionsController import mainFunctionsController
 from view.login import Ui_Dialog

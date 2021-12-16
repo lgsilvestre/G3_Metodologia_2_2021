@@ -1,2 +1,4 @@
 Admin,Admincontraseña
 LuisAdmin,Luis
+admin,admon
+admin,admin

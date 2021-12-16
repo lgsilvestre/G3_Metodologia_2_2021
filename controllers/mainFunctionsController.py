@@ -47,7 +47,7 @@ class mainFunctionsController(QDialog):
         super(mainFunctionsController, self).__init__()
         self.ui = mainFunctions()
         self.ui.setupUi(self)
-        self.ui.video.setPixmap(QPixmap("default.jpg"))
+        self.ui.video.setPixmap(QPixmap("view/ui/images/fondo.jpg"))
         self.image = None
         self.BtnActions()
         self.show()
@@ -81,7 +81,7 @@ class mainFunctionsController(QDialog):
         print("cancel")        
         self.cancel = True
         self.saveImg = False
-        self.ui.video.setPixmap(QPixmap("default.jpg"))
+        self.ui.video.setPixmap(QPixmap("view/ui/images/fondo.jpg"))
         
     def guardarImagen(self):
         self.saveImg = True
