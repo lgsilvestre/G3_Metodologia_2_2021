@@ -13,7 +13,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 class user(object):
     def setupUi(self, Dialog):
-        Dialog.setObjectName("Dialog")
+        Dialog.setObjectName("Crear usuario")
         Dialog.resize(400, 300)
         #self.pushButton = QtWidgets.QPushButton(Dialog)
         #self.pushButton.setGeometry(QtCore.QRect(150, 200, 75, 23))
