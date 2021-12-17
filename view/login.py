@@ -16,7 +16,7 @@ import sys
 class Ui_Dialog(object):
 
     def setupUi(self, Dialog):
-        Dialog.setObjectName("Dialog")
+        Dialog.setObjectName("Ingresar")
         Dialog.resize(800, 600)
         self.frame = QtWidgets.QFrame(Dialog)
         self.frame.setGeometry(QtCore.QRect(0, 0, 800, 600))

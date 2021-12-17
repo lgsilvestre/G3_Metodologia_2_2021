@@ -33,9 +33,6 @@ if compat.is_win:
         for f in glob.glob(pattern):
             binaries.append((f, '.'))
 
-    # Include any DLLs from site-packages/cv2 (opencv_videoio_ffmpeg*.dll
-    # can be found there in the PyPI version)
-    
     binaries += collect_dynamic_libs('cv2')
     
 

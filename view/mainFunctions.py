@@ -12,7 +12,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 class mainFunctions(object):
     def setupUi(self, Dialog):
-        Dialog.setObjectName("Dialog")
+        Dialog.setObjectName("Funciones")
         Dialog.resize(1109, 559)
         Dialog.setMinimumSize(QtCore.QSize(1109, 0))
         Dialog.setStyleSheet("Background-Color: rgb(0, 0, 0);")
@@ -199,7 +199,7 @@ if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
     Dialog = QtWidgets.QDialog()
-    ui = Ui_Dialog()
+    ui = mainFunctions()
     ui.setupUi(Dialog)
     Dialog.show()
     sys.exit(app.exec_())
